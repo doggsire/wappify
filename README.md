@@ -29,7 +29,7 @@ Example:
 
     wappify name=Github url=https://github.com/doggsire icon=/usr/share/icons/github.png
 
-	or
+or
 
 	wappify name=Github url=https://github.com/doggsire
 

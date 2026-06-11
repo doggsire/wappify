@@ -1,0 +1,47 @@
+#!/bin/bash
+# wappify - create a system-wide .desktop for a Chromium webapp
+# Usage: wappify name=Name url=https://example.com [icon=/path/to/icon]
+set -e
+
+DEST_DIR="/usr/share/applications"
+
+for a in "$@"; do
+  case "$a" in
+    name=*) NAME="${a#name=}";;
+    url=*)  URL="${a#url=}";;
+    icon=*) ICON="${a#icon=}";;
+    *) echo "Ignoring unknown argument: $a" >&2;;
+  esac
+done
+
+if [ -z "$NAME" ] || [ -z "$URL" ]; then
+  echo "Usage: wappify name=Name url=https://example.com [icon=/path/to/icon]" >&2
+  exit 1
+fi
+
+FNAME=$(echo "$NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-|-$//g')
+DESKTOP_FILE="${FNAME}.desktop"
+TMPFILE="$(mktemp)"
+
+cat > "$TMPFILE" <<EOF
+[Desktop Entry]
+Name=$NAME
+Exec=chromium --new-window --app=$URL
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
+StartupWMClass=$NAME
+EOF
+
+if [ -n "$ICON" ]; then
+  echo "Icon=$ICON" >> "$TMPFILE"
+fi
+
+if [ -w "$DEST_DIR" ]; then
+  mv "$TMPFILE" "$DEST_DIR/$DESKTOP_FILE"
+  chmod +x "$DEST_DIR/$DESKTOP_FILE"
+else
+  sudo sh -c "mv '$TMPFILE' '$DEST_DIR/$DESKTOP_FILE' && chmod +x '$DEST_DIR/$DESKTOP_FILE'"
+fi
+
+echo "Created: $DEST_DIR/$DESKTOP_FILE"

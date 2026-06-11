@@ -55,4 +55,4 @@ What it does:
 3. Launch from your applications menu or run the created desktop entry.
 
 ## Contributing
-PRs welcome. Suggested improvements: browser autodetection, URL validation, per-user defaults, desktop database registration, packaging (deb/AUR). Use conventional commit messages (e.g., `chore(release): v0.1.0`).
+PRs welcome. Suggested improvements: browser autodetection, URL validation, Automatic Icons, packaging (deb/AUR). Use conventional commit messages (e.g., `chore(release): v0.1.0`).
